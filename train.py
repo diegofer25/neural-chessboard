@@ -5,7 +5,7 @@ import h5py
 import numpy as np
 import sys, deps
 import glob, os
-
+import tensorflowjs as tfjs
 import keras.models
 
 print("---- FASTEN YOUR SEATBELTS -----") # FIXME
@@ -23,7 +23,7 @@ NC_MODELS = {
 
 def read_dataset(name):
 	global NC_PATH_DATASET
-	path = NC_PATH_DATASET + "{}.h5".format(name)
+	path = NC_PATH_DATASET + "{}.h5".format(name.lower())
 	h5f = h5py.File(path, 'r', driver='core')
 	X, Y = h5f['data'], h5f['labels']
 	X = X[()].reshape([-1, 21, 21, 1])
@@ -64,3 +64,4 @@ NAME = 'LAPS'.upper()
 model = train_network(load_model(NAME, best=True),
 		*read_dataset(NAME), n=int(sys.argv[1]))
 save_model(NAME)
+tfjs.converters.save_keras_model(model, '.')
